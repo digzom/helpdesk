@@ -7,7 +7,7 @@ defmodule Helpdesk.Support.Ticket do
     
     create :open do
       # this action should only accept the :subject
-      accept [:subject]
+      accept [:subject, :representative_id]
     end
 
     update :close do
@@ -29,7 +29,7 @@ defmodule Helpdesk.Support.Ticket do
       # this change is to replace the related Representative
       # If there is a different representative for this Ticket, it will be changeset to the new one
       # the representative itself is not modified in any way
-      change manage_relationship(:repesentative_id, :representative, type: :append_and_remove)
+      change manage_relationship(:representative_id, :representative, type: :append_and_remove)
     end
   end
 
@@ -48,9 +48,11 @@ defmodule Helpdesk.Support.Ticket do
   end
 
   relationships do
-                # name            # destination
     # again, we assume that the destination attribute is "representativ_id",
     # based on the name of the relationship
-    belongs_to :representative, Helpdesk.Support.Representative
+                # name            # destination
+    belongs_to :representative, Helpdesk.Support.Representative do
+      attribute_writable? true
+    end
   end
 end
